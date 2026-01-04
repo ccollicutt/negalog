@@ -1,0 +1,17 @@
+# Missing webhook URL
+log_sources:
+  - testdata/logs/heartbeat.log
+
+timestamp_format:
+  pattern: '^(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
+  layout: "Jan  2 15:04:05"
+
+rules:
+  - name: test-rule
+    type: periodic
+    pattern: 'HEARTBEAT'
+    max_gap: 10m
+
+webhooks:
+  - name: no-url-webhook
+    trigger: on_issues

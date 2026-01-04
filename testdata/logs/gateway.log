@@ -1,0 +1,5 @@
+Jan  1 10:00:01 gateway REQUEST_RECEIVED trace_id=TRC-001 path=/api/orders
+Jan  1 10:00:02 gateway REQUEST_RECEIVED trace_id=TRC-002 path=/api/users
+Jan  1 10:00:05 gateway REQUEST_RECEIVED trace_id=TRC-003 path=/api/orders
+Jan  1 10:00:10 gateway REQUEST_RECEIVED trace_id=TRC-004 path=/api/health
+Jan  1 10:00:15 gateway REQUEST_RECEIVED trace_id=TRC-005 path=/api/orders

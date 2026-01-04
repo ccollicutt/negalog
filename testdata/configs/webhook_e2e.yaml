@@ -1,0 +1,26 @@
+# NegaLog configuration for full e2e webhook testing
+# This config uses webhook.site for real external webhook validation
+# Run with: WEBHOOK_INTEGRATION_TEST=1 go test ./test/... -run TestIntegration
+#
+# Usage:
+#   negalog analyze testdata/configs/webhook_e2e.yaml \
+#     --webhook-url https://webhook.site/<uuid> \
+#     --webhook-trigger always
+
+log_sources:
+  - testdata/logs/heartbeat.log
+
+timestamp_format:
+  pattern: '^(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
+  layout: "Jan 2 15:04:05"
+
+rules:
+  - name: heartbeat-check
+    type: periodic
+    description: "API heartbeat monitoring"
+    pattern: 'HEARTBEAT service=api'
+    max_gap: 7m
+    min_occurrences: 50
+
+# Webhook URL is provided via CLI --webhook-url flag at runtime
+# This allows dynamic webhook.site endpoints for e2e testing

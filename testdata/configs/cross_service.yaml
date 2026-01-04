@@ -1,0 +1,19 @@
+# Cross-service request tracking
+# Detects requests that enter at gateway but never complete at backend
+
+log_sources:
+  - testdata/logs/gateway.log
+  - testdata/logs/backend.log
+
+timestamp_format:
+  pattern: '^(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
+  layout: "Jan  2 15:04:05"
+
+rules:
+  - name: request-flow
+    type: sequence
+    description: "Requests should complete within 30 seconds"
+    start_pattern: 'REQUEST_RECEIVED trace_id=(\w+-\d+)'
+    end_pattern: 'REQUEST_COMPLETED trace_id=(\w+-\d+)'
+    correlation_field: 1
+    timeout: 30s

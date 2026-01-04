@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Go
+        run: make install-go
+
+      - name: Build
+        run: make build
+
+      - name: Run tests
+        run: make test TYPE=all
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build binaries
+        run: |
+          mkdir -p dist
+          GO=/usr/local/go/bin/go
+
+          # Linux amd64
+          GOOS=linux GOARCH=amd64 $GO build -ldflags "-X negalog/internal/cli/commands.Version=${{ steps.version.outputs.VERSION }}" -o dist/negalog-linux-amd64 ./cmd/cli
+
+          # Linux arm64
+          GOOS=linux GOARCH=arm64 $GO build -ldflags "-X negalog/internal/cli/commands.Version=${{ steps.version.outputs.VERSION }}" -o dist/negalog-linux-arm64 ./cmd/cli
+
+      - name: Generate checksums
+        run: |
+          cd dist
+          sha256sum negalog-* > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/negalog-linux-amd64
+            dist/negalog-linux-arm64
+            dist/SHA256SUMS
+          body: |
+            ## Installation
+
+            ```bash
+            # Download binary (amd64)
+            wget https://github.com/ccollicutt/negalog/releases/latest/download/negalog-linux-amd64
+            wget https://github.com/ccollicutt/negalog/releases/latest/download/SHA256SUMS
+
+            # Verify checksum
+            sha256sum -c SHA256SUMS --ignore-missing
+
+            # Install
+            chmod +x negalog-linux-amd64
+            sudo mv negalog-linux-amd64 /usr/local/bin/negalog
+
+            # Verify installation
+            negalog version
+            ```
+
+            ## Binaries
+
+            | Architecture | Binary |
+            |--------------|--------|
+            | amd64 | `negalog-linux-amd64` |
+            | arm64 | `negalog-linux-arm64` |

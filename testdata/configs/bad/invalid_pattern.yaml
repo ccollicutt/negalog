@@ -1,0 +1,13 @@
+# Config with invalid regex pattern
+log_sources:
+  - testdata/logs/heartbeat.log
+
+timestamp_format:
+  pattern: '^([unclosed'
+  layout: "2006-01-02"
+
+rules:
+  - name: test-rule
+    type: periodic
+    pattern: 'test'
+    max_gap: 5m

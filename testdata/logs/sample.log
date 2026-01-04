@@ -1,0 +1,15 @@
+[2024-01-15 10:00:00] HEARTBEAT service=app
+[2024-01-15 10:00:05] REQUEST_START id=abc123
+[2024-01-15 10:00:10] Processing request abc123
+[2024-01-15 10:00:15] REQUEST_END id=abc123
+[2024-01-15 10:00:20] REQUEST_START id=def456
+[2024-01-15 10:00:25] Processing request def456
+[2024-01-15 10:05:00] HEARTBEAT service=app
+[2024-01-15 10:05:30] ERROR code=500 message="Internal server error"
+[2024-01-15 10:05:35] ALERT_SENT code=500
+[2024-01-15 10:10:00] HEARTBEAT service=app
+[2024-01-15 10:15:00] HEARTBEAT service=app
+[2024-01-15 10:20:00] HEARTBEAT service=app
+[2024-01-15 10:30:00] HEARTBEAT service=app
+[2024-01-15 10:35:00] ERROR code=404 message="Not found"
+[2024-01-15 10:40:00] HEARTBEAT service=app

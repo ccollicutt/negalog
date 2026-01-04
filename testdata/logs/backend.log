@@ -1,0 +1,3 @@
+Jan  1 10:00:03 backend REQUEST_COMPLETED trace_id=TRC-001 status=200
+Jan  1 10:00:04 backend REQUEST_COMPLETED trace_id=TRC-002 status=200
+Jan  1 10:00:12 backend REQUEST_COMPLETED trace_id=TRC-004 status=200

@@ -1,0 +1,28 @@
+# NegaLog configuration for Linux syslog analysis
+# Tests sequence detection on session open/close patterns
+
+log_sources:
+  - testdata/logs/linux_syslog.log
+
+timestamp_format:
+  # Syslog format: Jun 14 15:16:01
+  pattern: '^(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
+  layout: "Jan 2 15:04:05"
+
+rules:
+  # Detect sessions that were opened but never closed
+  - name: unclosed-sessions
+    type: sequence
+    description: "Detect user sessions that were opened but never closed"
+    start_pattern: 'session opened for user (\w+)'
+    end_pattern: 'session closed for user (\w+)'
+    correlation_field: 1  # Match by username
+    timeout: 1h
+
+  # Detect logrotate alerts that should trigger investigation
+  - name: logrotate-alerts
+    type: conditional
+    description: "Logrotate ALERT should be followed by admin action"
+    trigger_pattern: 'logrotate: ALERT'
+    expected_pattern: 'logrotate.*OK|admin.*acknowledged'
+    timeout: 30m

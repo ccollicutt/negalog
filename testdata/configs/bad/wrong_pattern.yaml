@@ -1,0 +1,14 @@
+# Config with pattern that doesn't match actual log format
+# heartbeat.log uses syslog format but this expects ISO 8601
+log_sources:
+  - testdata/logs/heartbeat.log
+
+timestamp_format:
+  pattern: '^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})'
+  layout: "2006-01-02T15:04:05"
+
+rules:
+  - name: test-rule
+    type: periodic
+    pattern: 'HEARTBEAT'
+    max_gap: 5m

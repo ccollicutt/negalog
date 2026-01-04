@@ -1,0 +1,13 @@
+# Config with broken sequence rule (missing required fields)
+log_sources:
+  - testdata/logs/heartbeat.log
+
+timestamp_format:
+  pattern: '^(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
+  layout: "Jan 2 15:04:05"
+
+rules:
+  - name: broken-sequence
+    type: sequence
+    # Missing: start_pattern, end_pattern, timeout
+    description: "This rule is incomplete"

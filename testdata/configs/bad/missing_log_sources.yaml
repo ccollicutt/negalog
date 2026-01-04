@@ -1,0 +1,10 @@
+# Config missing log_sources section
+timestamp_format:
+  pattern: '^(\d{4}-\d{2}-\d{2})'
+  layout: "2006-01-02"
+
+rules:
+  - name: test-rule
+    type: periodic
+    pattern: 'test'
+    max_gap: 5m

@@ -1,0 +1,63 @@
+# Synthetic heartbeat log for testing periodic detection
+# Expected: heartbeat every 5 minutes
+# Contains intentional gaps at:
+#   - 10:15 to 10:35 (20 min gap - 4 missed heartbeats)
+#   - 11:00 to 11:20 (20 min gap - 4 missed heartbeats)
+#   - 12:00 onwards (service stopped - minimum occurrences test)
+Jan 15 10:00:00 app-server healthcheck[1001]: HEARTBEAT service=api status=healthy latency=12ms
+Jan 15 10:00:15 app-server nginx[500]: GET /api/users 200 45ms
+Jan 15 10:02:30 app-server app[1000]: Processing batch job id=abc123
+Jan 15 10:05:00 app-server healthcheck[1002]: HEARTBEAT service=api status=healthy latency=8ms
+Jan 15 10:05:22 app-server nginx[500]: POST /api/orders 201 120ms
+Jan 15 10:08:45 app-server app[1000]: Batch job completed id=abc123
+Jan 15 10:10:00 app-server healthcheck[1003]: HEARTBEAT service=api status=healthy latency=15ms
+Jan 15 10:12:00 app-server nginx[500]: GET /api/products 200 32ms
+Jan 15 10:15:00 app-server healthcheck[1004]: HEARTBEAT service=api status=healthy latency=10ms
+# === GAP 1: No heartbeats from 10:15 to 10:35 (20 minutes) ===
+Jan 15 10:18:00 app-server nginx[500]: GET /api/health 200 5ms
+Jan 15 10:22:00 app-server app[1000]: Cache refresh started
+Jan 15 10:25:00 app-server nginx[500]: GET /api/status 200 8ms
+Jan 15 10:28:00 app-server app[1000]: Cache refresh completed
+Jan 15 10:32:00 app-server nginx[500]: POST /api/events 201 55ms
+# === GAP 1 ENDS: Heartbeat resumes ===
+Jan 15 10:35:00 app-server healthcheck[1005]: HEARTBEAT service=api status=healthy latency=22ms
+Jan 15 10:37:00 app-server nginx[500]: GET /api/users/123 200 18ms
+Jan 15 10:40:00 app-server healthcheck[1006]: HEARTBEAT service=api status=healthy latency=11ms
+Jan 15 10:42:00 app-server app[1000]: User login user=admin ip=192.168.1.50
+Jan 15 10:45:00 app-server healthcheck[1007]: HEARTBEAT service=api status=healthy latency=9ms
+Jan 15 10:48:00 app-server nginx[500]: PUT /api/settings 200 65ms
+Jan 15 10:50:00 app-server healthcheck[1008]: HEARTBEAT service=api status=healthy latency=14ms
+Jan 15 10:52:00 app-server app[1000]: Config reload triggered
+Jan 15 10:55:00 app-server healthcheck[1009]: HEARTBEAT service=api status=healthy latency=12ms
+Jan 15 10:58:00 app-server nginx[500]: DELETE /api/cache 204 200ms
+Jan 15 11:00:00 app-server healthcheck[1010]: HEARTBEAT service=api status=healthy latency=10ms
+# === GAP 2: No heartbeats from 11:00 to 11:20 (20 minutes) ===
+Jan 15 11:02:00 app-server nginx[500]: GET /api/metrics 200 25ms
+Jan 15 11:05:00 app-server app[1000]: Scheduled task started task=cleanup
+Jan 15 11:08:00 app-server nginx[500]: GET /api/logs 200 150ms
+Jan 15 11:12:00 app-server app[1000]: Scheduled task completed task=cleanup
+Jan 15 11:15:00 app-server nginx[500]: POST /api/webhook 202 30ms
+Jan 15 11:18:00 app-server app[1000]: External API call service=payment
+# === GAP 2 ENDS: Heartbeat resumes ===
+Jan 15 11:20:00 app-server healthcheck[1011]: HEARTBEAT service=api status=healthy latency=18ms
+Jan 15 11:22:00 app-server nginx[500]: GET /api/orders/456 200 22ms
+Jan 15 11:25:00 app-server healthcheck[1012]: HEARTBEAT service=api status=healthy latency=11ms
+Jan 15 11:28:00 app-server app[1000]: Report generation started
+Jan 15 11:30:00 app-server healthcheck[1013]: HEARTBEAT service=api status=healthy latency=13ms
+Jan 15 11:32:00 app-server nginx[500]: GET /api/reports/daily 200 500ms
+Jan 15 11:35:00 app-server healthcheck[1014]: HEARTBEAT service=api status=healthy latency=9ms
+Jan 15 11:38:00 app-server app[1000]: Report generation completed
+Jan 15 11:40:00 app-server healthcheck[1015]: HEARTBEAT service=api status=healthy latency=10ms
+Jan 15 11:42:00 app-server nginx[500]: GET /api/dashboard 200 85ms
+Jan 15 11:45:00 app-server healthcheck[1016]: HEARTBEAT service=api status=healthy latency=12ms
+Jan 15 11:48:00 app-server app[1000]: Session cleanup count=15
+Jan 15 11:50:00 app-server healthcheck[1017]: HEARTBEAT service=api status=healthy latency=8ms
+Jan 15 11:52:00 app-server nginx[500]: POST /api/uploads 201 1200ms
+Jan 15 11:55:00 app-server healthcheck[1018]: HEARTBEAT service=api status=healthy latency=11ms
+Jan 15 11:58:00 app-server app[1000]: File processed file=report.pdf
+Jan 15 12:00:00 app-server healthcheck[1019]: HEARTBEAT service=api status=healthy latency=10ms
+# === SERVICE STOPS: Only 20 heartbeats total, testing min_occurrences ===
+Jan 15 12:02:00 app-server app[1000]: Shutdown signal received
+Jan 15 12:02:05 app-server app[1000]: Graceful shutdown initiated
+Jan 15 12:02:10 app-server nginx[500]: Upstream connection closed
+Jan 15 12:02:15 app-server app[1000]: Service stopped

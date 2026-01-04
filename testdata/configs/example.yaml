@@ -1,0 +1,29 @@
+log_sources:
+  - testdata/logs/*.log
+
+timestamp_format:
+  pattern: '^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]'
+  layout: "2006-01-02 15:04:05"
+
+rules:
+  - name: request-completion
+    type: sequence
+    description: "Every request start should have a matching end"
+    start_pattern: 'REQUEST_START id=(\w+)'
+    end_pattern: 'REQUEST_END id=(\w+)'
+    correlation_field: 1
+    timeout: 60s
+
+  - name: heartbeat-check
+    type: periodic
+    description: "Heartbeat should occur every 5 minutes"
+    pattern: 'HEARTBEAT'
+    max_gap: 5m
+
+  - name: error-alert
+    type: conditional
+    description: "Errors should trigger alerts"
+    trigger_pattern: 'ERROR code=(\d+)'
+    expected_pattern: 'ALERT_SENT code=(\d+)'
+    correlation_field: 1
+    timeout: 10s

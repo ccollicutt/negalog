@@ -1,0 +1,30 @@
+# NegaLog configuration for heartbeat/periodic detection testing
+# Tests periodic detection on regular heartbeat patterns
+
+log_sources:
+  - testdata/logs/heartbeat.log
+
+timestamp_format:
+  # Syslog format: Jan 15 10:00:00
+  pattern: '^(\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})'
+  layout: "Jan 2 15:04:05"
+
+rules:
+  # Detect gaps in heartbeat logs
+  # Expected: heartbeat every 5 minutes, max gap allowed: 7 minutes
+  - name: api-heartbeat
+    type: periodic
+    description: "API service should send heartbeat every 5 minutes"
+    pattern: 'HEARTBEAT service=api'
+    max_gap: 7m
+    # Should detect 2 gaps (10:15-10:35 and 11:00-11:20)
+
+  # Test minimum occurrences
+  # We have 20 heartbeats, require 50 to trigger issue
+  - name: heartbeat-minimum
+    type: periodic
+    description: "Require minimum 50 heartbeats per analysis window"
+    pattern: 'HEARTBEAT'
+    max_gap: 10m
+    min_occurrences: 50
+    # Should report below minimum (only 20 occurrences)

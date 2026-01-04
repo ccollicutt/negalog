@@ -1,0 +1,8 @@
+# Invalid YAML - bad indentation and syntax
+log_sources:
+  - /var/log/test.log
+timestamp_format:
+pattern: '^test'  # Missing indentation
+  layout: "2006"
+rules:
+  - name: broken
