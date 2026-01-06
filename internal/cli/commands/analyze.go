@@ -8,11 +8,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"negalog/pkg/analyzer"
-	"negalog/pkg/config"
-	"negalog/pkg/output"
-	"negalog/pkg/parser"
-	"negalog/pkg/webhook"
+	"github.com/ccollicutt/negalog/pkg/analyzer"
+	"github.com/ccollicutt/negalog/pkg/config"
+	"github.com/ccollicutt/negalog/pkg/output"
+	"github.com/ccollicutt/negalog/pkg/parser"
+	"github.com/ccollicutt/negalog/pkg/webhook"
 )
 
 // ExitCode is set by commands to indicate the result

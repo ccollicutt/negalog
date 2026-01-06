@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"negalog/pkg/detector"
+	"github.com/ccollicutt/negalog/pkg/detector"
 )
 
 func TestNewAnalyzeCommand(t *testing.T) {

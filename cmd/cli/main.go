@@ -7,7 +7,7 @@ package main
 import (
 	"os"
 
-	"negalog/internal/cli"
+	"github.com/ccollicutt/negalog/internal/cli"
 )
 
 func main() {

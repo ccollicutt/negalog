@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"negalog/pkg/config"
-	"negalog/pkg/parser"
+	"github.com/ccollicutt/negalog/pkg/config"
+	"github.com/ccollicutt/negalog/pkg/parser"
 )
 
 // periodicMatch tracks a single match for periodic analysis.

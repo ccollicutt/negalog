@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"negalog/pkg/detector"
+	"github.com/ccollicutt/negalog/pkg/detector"
 )
 
 func TestGenerateStarterConfig(t *testing.T) {

@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"negalog/pkg/config"
-	"negalog/pkg/output"
+	"github.com/ccollicutt/negalog/pkg/config"
+	"github.com/ccollicutt/negalog/pkg/output"
 )
 
 func TestShouldFireWebhook(t *testing.T) {

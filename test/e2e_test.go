@@ -16,12 +16,12 @@ import (
 	"sync"
 	"testing"
 
-	"negalog/pkg/analyzer"
-	"negalog/pkg/config"
-	"negalog/pkg/detector"
-	"negalog/pkg/output"
-	"negalog/pkg/parser"
-	"negalog/pkg/webhook"
+	"github.com/ccollicutt/negalog/pkg/analyzer"
+	"github.com/ccollicutt/negalog/pkg/config"
+	"github.com/ccollicutt/negalog/pkg/detector"
+	"github.com/ccollicutt/negalog/pkg/output"
+	"github.com/ccollicutt/negalog/pkg/parser"
+	"github.com/ccollicutt/negalog/pkg/webhook"
 )
 
 var (

@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"negalog/pkg/config"
-	"negalog/pkg/detector"
-	"negalog/pkg/parser"
+	"github.com/ccollicutt/negalog/pkg/config"
+	"github.com/ccollicutt/negalog/pkg/detector"
+	"github.com/ccollicutt/negalog/pkg/parser"
 
 	"github.com/spf13/cobra"
 )

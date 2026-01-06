@@ -3,7 +3,7 @@ package analyzer
 import (
 	"context"
 
-	"negalog/pkg/parser"
+	"github.com/ccollicutt/negalog/pkg/parser"
 )
 
 // RuleEngine processes log lines and detects missing log patterns.

@@ -6,8 +6,8 @@ import (
 	"io"
 	"time"
 
-	"negalog/pkg/config"
-	"negalog/pkg/parser"
+	"github.com/ccollicutt/negalog/pkg/config"
+	"github.com/ccollicutt/negalog/pkg/parser"
 )
 
 // Analyzer orchestrates log analysis across multiple rules.

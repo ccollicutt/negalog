@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"negalog/pkg/analyzer"
+	"github.com/ccollicutt/negalog/pkg/analyzer"
 )
 
 func TestNewJSONFormatter(t *testing.T) {

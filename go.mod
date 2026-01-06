@@ -1,4 +1,4 @@
-module negalog
+module github.com/ccollicutt/negalog
 
 go 1.25
 

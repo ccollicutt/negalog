@@ -9,7 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"negalog/pkg/detector"
+	"github.com/ccollicutt/negalog/pkg/detector"
 )
 
 // DetectOptions holds command-line options for the detect command.

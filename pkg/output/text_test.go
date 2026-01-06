@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"negalog/pkg/analyzer"
+	"github.com/ccollicutt/negalog/pkg/analyzer"
 )
 
 func TestNewTextFormatter(t *testing.T) {

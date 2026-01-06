@@ -4,7 +4,7 @@ package output
 import (
 	"time"
 
-	"negalog/pkg/analyzer"
+	"github.com/ccollicutt/negalog/pkg/analyzer"
 )
 
 // Report is the complete analysis output.

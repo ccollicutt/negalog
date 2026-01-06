@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"negalog/pkg/analyzer"
-	"negalog/pkg/output"
+	"github.com/ccollicutt/negalog/pkg/analyzer"
+	"github.com/ccollicutt/negalog/pkg/output"
 )
 
 func newTestReport() *output.Report {

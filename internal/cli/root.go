@@ -7,8 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"negalog/internal/cli/commands"
-	"negalog/internal/cli/plugins"
+	"github.com/ccollicutt/negalog/internal/cli/commands"
+	"github.com/ccollicutt/negalog/internal/cli/plugins"
 )
 
 // Execute runs the root command and returns the exit code.

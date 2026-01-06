@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	"negalog/pkg/analyzer"
+	"github.com/ccollicutt/negalog/pkg/analyzer"
 )
 
 // TextFormatter formats reports as human-readable text.

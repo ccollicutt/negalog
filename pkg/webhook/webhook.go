@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"time"
 
-	"negalog/pkg/output"
+	"github.com/ccollicutt/negalog/pkg/output"
 )
 
 // DefaultTimeout is the default HTTP request timeout.

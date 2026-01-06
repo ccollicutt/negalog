@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"negalog/pkg/config"
-	"negalog/pkg/parser"
+	"github.com/ccollicutt/negalog/pkg/config"
+	"github.com/ccollicutt/negalog/pkg/parser"
 )
 
 // NewValidateCommand creates the validate command.
