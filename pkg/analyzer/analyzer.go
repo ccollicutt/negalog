@@ -19,6 +19,7 @@ type Analyzer struct {
 	timeRange  *TimeRange
 	ruleFilter map[string]bool // nil means all rules
 	verbose    bool
+	keepState  bool // don't reset engines between analyses
 }
 
 // TimeRange defines a time window for filtering log lines.
@@ -53,6 +54,14 @@ func WithRuleFilter(rules []string) AnalyzerOption {
 func WithVerbose(v bool) AnalyzerOption {
 	return func(a *Analyzer) {
 		a.verbose = v
+	}
+}
+
+// WithKeepState prevents Reset() from being called between analyses.
+// This is useful for continuous monitoring where state must persist.
+func WithKeepState(keep bool) AnalyzerOption {
+	return func(a *Analyzer) {
+		a.keepState = keep
 	}
 }
 
@@ -135,6 +144,22 @@ type AnalysisMetadata struct {
 	LinesProcessed int
 }
 
+// AnalyzerState holds serializable state for all engines.
+// Used for persisting state across analysis windows in continuous monitoring.
+type AnalyzerState struct {
+	Engines   []EngineState `json:"engines"`
+	Timestamp time.Time     `json:"timestamp"`
+}
+
+// EngineState holds serializable state for a single engine.
+type EngineState struct {
+	Name      string          `json:"name"`
+	Type      config.RuleType `json:"type"`
+	Sequences []SequenceState `json:"sequences,omitempty"`
+	Triggers  []TriggerState  `json:"triggers,omitempty"`
+	Periodic  *PeriodicState  `json:"periodic,omitempty"`
+}
+
 // TotalIssues returns the total number of issues across all rules.
 func (r *AnalysisResult) TotalIssues() int {
 	total := 0
@@ -165,9 +190,11 @@ func (a *Analyzer) Analyze(ctx context.Context, source parser.LogSource) (*Analy
 		},
 	}
 
-	// Reset all engines before analysis
-	for _, engine := range a.engines {
-		engine.Reset()
+	// Reset all engines before analysis (unless keepState is enabled)
+	if !a.keepState {
+		for _, engine := range a.engines {
+			engine.Reset()
+		}
 	}
 
 	// Track sources seen
@@ -224,4 +251,64 @@ func (a *Analyzer) Analyze(ctx context.Context, source parser.LogSource) (*Analy
 	result.Metadata.EndTime = time.Now()
 
 	return result, nil
+}
+
+// ExportState exports the current state of all engines for persistence.
+// This allows state to be saved and restored across process restarts.
+func (a *Analyzer) ExportState() *AnalyzerState {
+	state := &AnalyzerState{
+		Engines:   make([]EngineState, 0, len(a.engines)),
+		Timestamp: time.Now(),
+	}
+
+	for _, engine := range a.engines {
+		es := EngineState{Name: engine.Name()}
+
+		switch e := engine.(type) {
+		case *SequenceEngine:
+			es.Type = config.RuleTypeSequence
+			es.Sequences = e.ExportState()
+		case *PeriodicEngine:
+			es.Type = config.RuleTypePeriodic
+			es.Periodic = e.ExportState()
+		case *ConditionalEngine:
+			es.Type = config.RuleTypeConditional
+			es.Triggers = e.ExportState()
+		}
+
+		state.Engines = append(state.Engines, es)
+	}
+
+	return state
+}
+
+// ImportState restores engine state from a previously exported state.
+// This allows resuming analysis from where it left off.
+func (a *Analyzer) ImportState(state *AnalyzerState) {
+	if state == nil {
+		return
+	}
+
+	// Build map for quick lookup
+	engineMap := make(map[string]EngineState)
+	for _, es := range state.Engines {
+		engineMap[es.Name] = es
+	}
+
+	// Restore state to matching engines
+	for _, engine := range a.engines {
+		es, ok := engineMap[engine.Name()]
+		if !ok {
+			continue
+		}
+
+		switch e := engine.(type) {
+		case *SequenceEngine:
+			e.ImportState(es.Sequences)
+		case *PeriodicEngine:
+			e.ImportState(es.Periodic)
+		case *ConditionalEngine:
+			e.ImportState(es.Triggers)
+		}
+	}
 }

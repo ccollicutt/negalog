@@ -171,7 +171,7 @@ release: ## Push code and create a release tag from VERSION file
 	echo "Releasing $$TAG..."; \
 	echo ""; \
 	echo "Running tests..."; \
-	$(MAKE) test TYPE=all || { echo "FAIL: Tests failed, aborting release"; exit 1; }; \
+	$(MAKE) test TYPE=all NOBUMP=1 || { echo "FAIL: Tests failed, aborting release"; exit 1; }; \
 	echo ""; \
 	echo "Pushing code to origin..."; \
 	git add -A && git commit -m "Release $$TAG" || true; \
@@ -214,12 +214,16 @@ build: ## Build Go binaries. Variables: TYPE=binary|all|race (default: binary). 
 	TAGS_FLAG=""; \
 	if [ -n "$(TAGS)" ]; then TAGS_FLAG="-tags '$(TAGS)'"; fi; \
 	CURRENT=$$(cat $(VERSION_FILE)); \
-	MAJOR=$$(echo $$CURRENT | cut -d. -f1); \
-	MINOR=$$(echo $$CURRENT | cut -d. -f2); \
-	PATCH=$$(echo $$CURRENT | cut -d. -f3); \
-	NEW_PATCH=$$((PATCH + 1)); \
-	NEW_VERSION="$$MAJOR.$$MINOR.$$NEW_PATCH"; \
-	echo "$$NEW_VERSION" > $(VERSION_FILE); \
+	if [ "$(NOBUMP)" = "1" ]; then \
+		NEW_VERSION="$$CURRENT"; \
+	else \
+		MAJOR=$$(echo $$CURRENT | cut -d. -f1); \
+		MINOR=$$(echo $$CURRENT | cut -d. -f2); \
+		PATCH=$$(echo $$CURRENT | cut -d. -f3); \
+		NEW_PATCH=$$((PATCH + 1)); \
+		NEW_VERSION="$$MAJOR.$$MINOR.$$NEW_PATCH"; \
+		echo "$$NEW_VERSION" > $(VERSION_FILE); \
+	fi; \
 	LDFLAGS="-X $(VERSION_PKG).Version=$$NEW_VERSION"; \
 	case "$$TYPE" in \
 		binary) \
@@ -331,7 +335,7 @@ test: ## Run tests, linters, and quality checks. TYPE=unit|integration|e2e|cover
 			;; \
 		e2e) \
 			echo "Running e2e tests..."; \
-			$(MAKE) build TYPE=binary > /dev/null 2>&1 || { echo "FAIL: Build failed"; exit 1; }; \
+			$(MAKE) build TYPE=binary NOBUMP=$(NOBUMP) > /dev/null 2>&1 || { echo "FAIL: Build failed"; exit 1; }; \
 			$(GO) test $$TEST_FLAGS ./test/... > "$$LOGFILE" 2>&1; \
 			EXIT_CODE=$$?; \
 			PASSED=$$(grep -c "^ok" "$$LOGFILE" || echo 0); \
@@ -504,7 +508,7 @@ test: ## Run tests, linters, and quality checks. TYPE=unit|integration|e2e|cover
 			echo "Running full test suite..."; \
 			FAILED=0; \
 			echo "=== Build ==="; \
-			$(MAKE) build TYPE=binary || FAILED=1; \
+			$(MAKE) build TYPE=binary NOBUMP=$(NOBUMP) || FAILED=1; \
 			echo "=== Unit Tests ==="; \
 			$(GO) test $$TEST_FLAGS -short ./cmd/... ./internal/... ./pkg/... > "$$LOGFILE.unit" 2>&1 || FAILED=1; \
 			if [ "$$CI" = "true" ]; then cat "$$LOGFILE.unit"; fi; \
